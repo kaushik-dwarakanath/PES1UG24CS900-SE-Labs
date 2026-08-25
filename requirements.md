@@ -1,0 +1,21 @@
+
+# Requirements Specification
+
+## Functional Requirements
+
+| ID     | Description                                                                                                                                      | Priority | Acceptance Criteria                                                                                                                                                           | Rationale                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| FR-001 | The system shall allow a passenger to register a lost baggage claim using a valid baggage tag number and flight details.                         | High     | **Pass:** A claim is successfully created when valid baggage tag and flight details are provided. **Fail:** The system rejects incomplete or invalid information. | Enables passengers to officially report lost baggage.  |
+| FR-002 | The system shall cross-reference the passenger's lost baggage claim with baggage scan records across connected airport terminals.                | High     | **Pass:** Matching baggage scan records are identified and linked to the claim. **Fail:** No incorrect baggage is matched.                                        | Helps locate lost baggage accurately.                  |
+| FR-003 | The system shall allow passengers to track the current status of their baggage claim and view the baggage scan timeline.                         | High     | **Pass:** The passenger can view the latest claim status and scan history. **Fail:** Incorrect or unavailable status is displayed.                                | Provides transparency during baggage recovery.         |
+| FR-004 | The system shall allow a baggage service agent to update the claim status after locating, transferring, or delivering baggage.                   | Medium   | **Pass:** Updated status is immediately reflected in the system. **Fail:** Status updates are not saved.                                                          | Keeps passengers informed of recovery progress.        |
+| FR-005 | The system shall automatically initiate the passenger compensation process if baggage is not recovered within the airline's compensation policy. | Medium   | **Pass:** Compensation workflow is automatically triggered when eligibility conditions are met. **Fail:** Eligible claims are not processed.                      | Ensures timely compensation and reduces manual effort. |
+
+---
+
+## Non-Functional Requirements
+
+| ID      | Type        | Description                                                                                                                            | Priority | Acceptance Criteria                                                                                                                 | Rationale                                                          |
+| ------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| NFR-001 | Performance | The baggage tracking system shall return the complete baggage scan timeline within 200 milliseconds under normal operating conditions. | High     | **Pass:** Average response time is less than 200 ms during performance testing. **Fail:** Response time exceeds 200 ms. | Provides a fast and responsive user experience.                    |
+| NFR-002 | Security    | Only authenticated passengers and authorized baggage service agents shall be allowed to access baggage claim information.              | High     | **Pass:** Unauthorized users cannot access or modify baggage claim data. **Fail:** Unauthorized access is possible.     | Protects passenger information and maintains data confidentiality. |
