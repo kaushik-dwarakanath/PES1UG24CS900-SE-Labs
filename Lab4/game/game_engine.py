@@ -43,7 +43,9 @@ class GameEngine:
     def start_next_round(self):
         new_color = random.randint(0, 3)
 
-        self.sequence += self.sequence + [new_color]
+        # self.sequence += self.sequence + [new_color]    # This is the bug for Task 1
+        
+        self.sequence.append(new_color)
         
         self.player_input.clear()
         self.state = "WATCH"
