@@ -1,6 +1,23 @@
+import math
 import random
+from array import array
+
 import pygame
 from game.color_button import ColorButton
+
+
+# Playback timing (milliseconds): starts slow and easy to follow, speeds up
+# each round, and never goes below the minimums so it stays playable.
+BASE_FLASH_MS = 450
+BASE_PAUSE_MS = 200
+MIN_FLASH_MS = 160
+MIN_PAUSE_MS = 70
+FLASH_STEP_MS = 20   # flash time removed per round after round 1
+PAUSE_STEP_MS = 9    # pause time removed per round after round 1
+
+# One pitch (Hz) per button id: Red, Blue, Green, Yellow (C4, E4, G4, C5).
+TONE_FREQUENCIES = [262, 330, 392, 523]
+TONE_LENGTH_MS = 200
 
 
 class GameEngine:
@@ -27,8 +44,8 @@ class GameEngine:
         self.state = "WATCH"
         self.showing_step = 0
         self.step_start_time = 0
-        self.flash_duration = 450
-        self.pause_duration = 200
+        self.flash_duration = BASE_FLASH_MS
+        self.pause_duration = BASE_PAUSE_MS
         self.is_flashing = False
 
         self.player_lit_button = None
@@ -38,21 +55,64 @@ class GameEngine:
         self.font_title = pygame.font.SysFont(None, 40)
         self.font_medium = pygame.font.SysFont(None, 28)
 
+        self.sounds = self.build_sounds()
+
         self.start_next_round()
+
+    def build_sounds(self):
+        """Generate one short sine tone per button (no extra dependencies).
+        Returns an empty list if audio is unavailable so the game still runs."""
+        try:
+            init = pygame.mixer.get_init()
+            if init is None or init[1] != -16:
+                pygame.mixer.quit()
+                pygame.mixer.init(44100, -16, 1)
+            sample_rate, _, channels = pygame.mixer.get_init()
+
+            sounds = []
+            total = int(sample_rate * TONE_LENGTH_MS / 1000)
+            fade = int(sample_rate * 0.015)  # short fade in/out avoids clicks
+            for freq in TONE_FREQUENCIES:
+                samples = array("h")
+                for i in range(total):
+                    envelope = min(1.0, i / fade, (total - i) / fade)
+                    value = int(9000 * envelope * math.sin(2 * math.pi * freq * i / sample_rate))
+                    samples.extend([value] * channels)
+                sounds.append(pygame.mixer.Sound(buffer=samples.tobytes()))
+            return sounds
+        except pygame.error:
+            return []
+
+    def play_tone(self, color_id):
+        if self.sounds:
+            self.sounds[color_id].play()
+
+    def update_playback_speed(self):
+        """Shorten flash and pause as the round number (sequence length) grows."""
+        rounds_played = len(self.sequence) - 1
+        self.flash_duration = max(MIN_FLASH_MS, BASE_FLASH_MS - FLASH_STEP_MS * rounds_played)
+        self.pause_duration = max(MIN_PAUSE_MS, BASE_PAUSE_MS - PAUSE_STEP_MS * rounds_played)
 
     def start_next_round(self):
         new_color = random.randint(0, 3)
 
-        # self.sequence += self.sequence + [new_color]    # This is the bug for Task 1
-        
+        # self.sequence += self.sequence + [new_color]    # This is the bug for Task 1        
         self.sequence.append(new_color)
         
+        self.update_playback_speed()
+
+        # Drop any leftover click highlight so it can't overlap/cut the first flash
+        if self.player_lit_button is not None:
+            self.player_lit_button.is_lit = False
+            self.player_lit_button = None
+
         self.player_input.clear()
         self.state = "WATCH"
         self.showing_step = 0
         self.step_start_time = pygame.time.get_ticks()
         self.is_flashing = True
         self.buttons[self.sequence[0]].is_lit = True
+        self.play_tone(self.sequence[0])
 
     def update(self):
         now = pygame.time.get_ticks()
@@ -76,6 +136,7 @@ class GameEngine:
                     if self.showing_step < len(self.sequence):
                         next_id = self.sequence[self.showing_step]
                         self.buttons[next_id].is_lit = True
+                        self.play_tone(next_id)
                         self.is_flashing = True
                         self.step_start_time = now
                     else:
@@ -90,9 +151,12 @@ class GameEngine:
         if self.state == "PLAYER_TURN" and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             for btn in self.buttons:
                 if btn.contains(event.pos):
+                    if self.player_lit_button is not None:
+                        self.player_lit_button.is_lit = False  # avoid a stuck-lit pad on fast clicks
                     btn.is_lit = True
                     self.player_lit_button = btn
                     self.player_lit_start = pygame.time.get_ticks()
+                    self.play_tone(btn.color_id)
 
                     self.register_player_click(btn.color_id)
                     break
