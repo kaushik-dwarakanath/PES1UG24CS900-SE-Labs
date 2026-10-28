@@ -1,0 +1,14 @@
+test_arithmetic_rejects_code (test_pharmacy_manager.PharmacyTests.test_arithmetic_rejects_code) ... ok
+test_billing (test_pharmacy_manager.PharmacyTests.test_billing) ... ok
+test_dispensing_is_atomic (test_pharmacy_manager.PharmacyTests.test_dispensing_is_atomic) ... ok
+test_expiry_boundaries (test_pharmacy_manager.PharmacyTests.test_expiry_boundaries) ... ok
+test_identifiers_and_literal_label (test_pharmacy_manager.PharmacyTests.test_identifiers_and_literal_label) ... ok
+test_independent_audit_and_explicit_audit (test_pharmacy_manager.PharmacyTests.test_independent_audit_and_explicit_audit) ... ok
+test_invalid_stock_is_rejected (test_pharmacy_manager.PharmacyTests.test_invalid_stock_is_rejected) ... ok
+test_json_roundtrip_and_atomic_validation (test_pharmacy_manager.PharmacyTests.test_json_roundtrip_and_atomic_validation) ... ok
+test_login_requires_configuration (test_pharmacy_manager.PharmacyTests.test_login_requires_configuration) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.004s
+
+OK

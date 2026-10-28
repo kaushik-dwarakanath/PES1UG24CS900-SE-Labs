@@ -1,0 +1,13 @@
+Dispensing rejected: Medicine is not in stock
+Paracetamol stock: 170
+Amoxicillin expired? True
+Bill: 45.0
+Dosage (mg/day): 500
+Patient ID: e490875f5a58f0603473cf5405b37afd10980d8904d64b105a7129fc56a3274f
+Rx number: RX-928734
+Login: False
+Dispensing label: Paracetamol 500mg
+===== Pharmacy Stock Report =====
+Paracetamol 500mg -> 170 units, Rs. 1.5 exp 2099-12-31
+Amoxicillin 250mg -> 40 units, Rs. 6.0 exp 2026-01-15
+Cetirizine 10mg -> 10 units, Rs. 2.0 exp 2099-12-31

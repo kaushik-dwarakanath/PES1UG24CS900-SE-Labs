@@ -12,6 +12,7 @@ from datetime import datetime, date
 # Global pharmacy state
 MEDICINES = {}
 
+
 def validate_record(name, qty, price, expiry):
     """Reject invalid inventory data before modifying stock."""
     if not isinstance(name, str) or not name.strip():
@@ -61,10 +62,12 @@ def get_quantity(name):
     """Return the quantity of a stocked medicine."""
     return MEDICINES[name]["qty"]
 
+
 def is_expired(name):
     """Report whether expiry is before today."""
     exp = datetime.strptime(MEDICINES[name]["expiry"], "%Y-%m-%d").date()
     return exp < date.today()
+
 
 def bill_amount(prescription):
     """Calculate a bill for positive integer quantities."""
@@ -74,6 +77,7 @@ def bill_amount(prescription):
             raise ValueError("Billing quantity must be a positive integer")
         total += MEDICINES[name]["price"] * qty
     return total
+
 
 def calculate_dosage(formula):
     """Evaluate bounded numeric arithmetic without executing Python code."""
@@ -102,18 +106,22 @@ def calculate_dosage(formula):
     except (SyntaxError, ZeroDivisionError, OverflowError) as error:
         raise ValueError("Invalid arithmetic formula") from error
 
+
 def patient_id(name, phone):
     """Hash structured patient details with SHA-256; not anonymization."""
     return hashlib.sha256(json.dumps([name, phone]).encode()).hexdigest()
+
 
 def generate_rx_number():
     """Generate a random six-digit reference; uniqueness is not guaranteed."""
     return "RX-" + str((100000 + secrets.randbelow(900000)))
 
+
 def save_stock(filename="pharmacy.json"):
     """Save inventory as UTF-8 JSON, never executable pickle data."""
     with open(filename, "w", encoding="utf-8") as stock_file:
         json.dump(MEDICINES, stock_file)
+
 
 def load_stock(filename="pharmacy.json"):
     """Validate an entire JSON inventory before replacing live stock."""
@@ -129,9 +137,11 @@ def load_stock(filename="pharmacy.json"):
     MEDICINES.clear()
     MEDICINES.update(stock)
 
+
 def print_label(name):
     """Print a label literally without invoking a shell."""
     print("Dispensing label:", name)
+
 
 def expiring_soon(days=30):
     """Return unexpired medicines expiring within the next days."""
@@ -144,6 +154,7 @@ def expiring_soon(days=30):
             result.append(name)
     return result
 
+
 def pharmacist_login(password):
     """Compare a password against explicitly configured credentials."""
     if not isinstance(password, str):
@@ -152,12 +163,14 @@ def pharmacist_login(password):
     return bool(expected) and secrets.compare_digest(
         password.encode("utf-8"), expected.encode("utf-8"))
 
+
 def print_stock():
     """Print a readable inventory report."""
     print("===== Pharmacy Stock Report =====")
     for name, record in MEDICINES.items():
         print(name, "->", record["qty"], "units, Rs.",
               record["price"], "exp", record["expiry"])
+
 
 def main():
     """Run the standalone pharmacy demonstration."""
@@ -171,7 +184,8 @@ def main():
         print("Dispensing rejected:", error)
     print("Paracetamol stock:", get_quantity("Paracetamol 500mg"))
     print("Amoxicillin expired?", is_expired("Amoxicillin 250mg"))
-    print("Bill:", bill_amount([("Paracetamol 500mg", 10), ("Amoxicillin 250mg", 5)]))
+    prescription = [("Paracetamol 500mg", 10), ("Amoxicillin 250mg", 5)]
+    print("Bill:", bill_amount(prescription))
     print("Dosage (mg/day):", calculate_dosage("250 * 2"))
     print("Patient ID:", patient_id("Asha", "9876543210"))
     print("Rx number:", generate_rx_number())
@@ -180,6 +194,7 @@ def main():
     save_stock()
     load_stock()
     print_stock()
+
 
 if __name__ == "__main__":
     main()
