@@ -1,0 +1,9 @@
+$ python -m coverage run --data-file=.coverage.code --source=phone_repair_quote -m pytest -q CodeCoverageTest_PES1UG24CS900_phone_repair_quote.py
+..............                                                           [100%]
+14 passed in 0.01s
+$ python -m coverage report --data-file=.coverage.code -m --fail-under=100
+Name                    Stmts   Miss  Cover   Missing
+-----------------------------------------------------
+phone_repair_quote.py      40      0   100%
+-----------------------------------------------------
+TOTAL                      40      0   100%
