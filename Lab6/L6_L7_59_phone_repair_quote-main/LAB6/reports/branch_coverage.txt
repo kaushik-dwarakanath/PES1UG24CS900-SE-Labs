@@ -1,0 +1,11 @@
+$ python -m coverage run --data-file=.coverage.branch --branch --source=phone_repair_quote -m pytest -q BranchCoverageTest_PES1UG24CS900_phone_repair_quote.py
+........................................................................ [ 62%]
+...........................................                              [100%]
+115 passed in 0.07s
+$ python -m coverage report --data-file=.coverage.branch -m --fail-under=100
+Name                    Stmts   Miss Branch BrPart  Cover   Missing
+-------------------------------------------------------------------
+phone_repair_quote.py      40      0     28      0   100%
+-------------------------------------------------------------------
+TOTAL                      40      0     28      0   100%
+Branch outcomes covered: 28/28 (100%). Missing statements: 0. Partial branches: 0.
