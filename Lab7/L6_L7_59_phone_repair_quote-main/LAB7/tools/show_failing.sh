@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 cd "$(dirname "$0")/.." || exit 1
+cmp -s phone_repair_quote_parser.py evidence/original_phone_repair_quote_parser.py || {
+    printf "Use baseline commit ffb09ca in a separate checkout for this script.\n"
+    exit 1
+}
 source .venv/bin/activate
 clear
 printf 'LAB 7 | PES1UG24CS900 | SS2: Fuzz tests on original module\n\n'

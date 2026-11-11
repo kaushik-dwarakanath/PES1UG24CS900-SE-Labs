@@ -1,0 +1,9 @@
+============================= test session starts ==============================
+platform linux -- Python 3.15.0, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7
+plugins: hypothesis-6.170.15
+collected 23 items
+
+test_phone_repair_quote_parser.py .......................                [100%]
+
+============================== 23 passed in 0.91s ==============================
