@@ -70,7 +70,7 @@ def test_parse_model_no_crash(s):
     (mask_imei, "12", "12"),
     (mask_imei, " - ", ""),
     (mask_imei, "abc1234", ""),
-    (mask_imei, "１２３４", ""),
+    (mask_imei, "\uff11\uff12\uff13\uff14", ""),
     (mask_imei, 123456, ""),
     (parse_parts_order, "screen x1; battery x2", {"screen": 1, "battery": 2}),
     (parse_parts_order, "box x2; flex cable x3", {"box": 2, "flex cable": 3}),
