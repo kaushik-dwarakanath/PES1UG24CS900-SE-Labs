@@ -3,15 +3,13 @@ from pathlib import Path
 import subprocess
 from xml.sax.saxutils import escape
 
-from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
-from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    Image, PageBreak, Paragraph, Preformatted, SimpleDocTemplate, Spacer,
-    Table, TableStyle,
+    Image, KeepTogether, PageBreak, Paragraph, Preformatted, SimpleDocTemplate, Spacer,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,10 +23,15 @@ for family, name in [("DejaVu Sans", "Body"), ("DejaVu Sans Mono", "Code")]:
     pdfmetrics.registerFont(TTFont(name, path))
 
 styles = getSampleStyleSheet()
-styles.add(ParagraphStyle("Text", fontName="Body", fontSize=10, leading=15,
+styles.add(ParagraphStyle("Text", fontName="Times-Roman", fontSize=12, leading=16,
                           spaceAfter=10, alignment=TA_LEFT))
-styles.add(ParagraphStyle("Source", fontName="Code", fontSize=8.1, leading=10))
-styles.add(ParagraphStyle("Label", fontName="Body", fontSize=8.5, leading=12,
+styles["Heading1"].fontName = "Times-Bold"
+styles["Heading1"].fontSize = 14
+styles["Heading1"].leading = 18
+styles["Heading1"].spaceBefore = 10
+styles["Heading1"].spaceAfter = 6
+styles.add(ParagraphStyle("Source", fontName="Code", fontSize=8.5, leading=11))
+styles.add(ParagraphStyle("Label", fontName="Times-Roman", fontSize=11, leading=14,
                           spaceAfter=6))
 story = []
 
@@ -43,13 +46,14 @@ def title(text):
 
 
 title("Lab 7: Fuzzing for Input Validation Bugs")
-paragraph("<b>Kaushik Krishna Dwarakanath | PES1UG24CS900 | Section 5-B</b><br/>"
-          "Software Engineering | Phone Repair Quote | 11 November 2026")
+paragraph("Name: Kaushik Krishna Dwarakanath<br/>"
+          "SRN: PES1UG24CS900<br/>Section: 5-B<br/>"
+          "Subject: Software Engineering<br/>Date: 11 November 2026")
 paragraph("<b>Objective:</b> Use Hypothesis to identify unexpected-input failures in "
           "the three supplied parsers, harden them, and verify both crash resistance "
           "and expected outputs. File names follow the assignment repository README.")
 paragraph("<b>Environment:</b> Python 3.15.0, pytest 9.2.0, Hypothesis 6.170.15, "
-          "Linux. Report generated with ReportLab 5.1.0. Dependencies are pinned "
+          "Linux. Dependencies are pinned "
           "in requirements.txt; tests run in a local virtual environment.")
 rows = [["Function", "Observed failure / edge case", "Correction"],
         ["mask_imei", "None raises AttributeError; arbitrary characters leak through.",
@@ -58,24 +62,14 @@ rows = [["Function", "Observed failure / edge case", "Correction"],
          "Validate each entry; skip malformed items; safely convert positive quantities."],
         ["parse_model", "Empty or single-word input raises ValueError; None/bytes crash; tabs split incorrectly.",
          "Guard types; split on whitespace; return a consistent two-string tuple."]]
-table = Table([[Paragraph(escape(cell), styles["Label"]) for cell in row]
-               for row in rows], colWidths=[110, 310, 330])
-table.setStyle(TableStyle([
-    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#dce8f5")),
-    ("VALIGN", (0, 0), (-1, -1), "TOP"),
-    ("GRID", (0, 0), (-1, -1), .4, colors.HexColor("#b3c3d5")),
-    ("LEFTPADDING", (0, 0), (-1, -1), 8),
-    ("TOPPADDING", (0, 0), (-1, -1), 8),
-]))
-story.append(table)
-story.append(Spacer(1, 12))
+for function, problem, fix in rows[1:]:
+    paragraph(f"<b>{escape(function)}</b><br/>{escape(problem)} {escape(fix)}")
 paragraph("<b>Results:</b> Original module: all three fuzz tests fail. Fixed module: "
           "23 tests pass, comprising 3 properties with 500 passing generated examples "
           "each and 20 regression cases. Baseline commit: ffb09ca. Full minimized "
           "failures and final statistics are preserved in evidence/.")
 
-story.append(PageBreak())
-title("Learning reflections and input contracts")
+title("Reflections")
 paragraph("<b>Reflection 1: What bugs did fuzz testing reveal?</b><br/>"
           "The original functions trusted input types and formats. Hypothesis "
           "automatically reduced failures to None, empty strings and empty bytes. "
@@ -119,42 +113,30 @@ screens = [
     ("SS4: Final passing test suite", "SS4_passing_tests.png",
      "The full test file passes: three Hypothesis properties and twenty regression cases. Separate final_fuzz_statistics.txt records 500 passing examples for each property."),
 ]
+story.append(PageBreak())
+title("Screenshots")
 for heading, filename, caption in screens:
-    story.append(PageBreak())
-    title(heading)
     img = Image(str(ROOT / "evidence" / filename))
-    scale = min(760 / img.imageWidth, 420 / img.imageHeight)
+    scale = min((A4[0] - 144) / img.imageWidth, 290 / img.imageHeight)
     img.drawWidth = img.imageWidth * scale
     img.drawHeight = img.imageHeight * scale
-    story.append(img)
-    story.append(Spacer(1, 8))
-    story.append(Paragraph(escape(caption), styles["Label"]))
+    story.append(KeepTogether([
+        Paragraph(heading, styles["Heading1"]), img, Spacer(1, 8),
+        Paragraph(escape(caption), styles["Label"]), Spacer(1, 12),
+    ]))
 
 for filename in ["phone_repair_quote_parser.py", "test_phone_repair_quote_parser.py"]:
-    # Preserve every source character; chunk only at physical line boundaries.
-    lines = (ROOT / filename).read_text().splitlines()
-    for offset in range(0, len(lines), 46):
-        story.append(PageBreak())
-        title(f"Source: {filename}")
-        story.append(Paragraph(
-            f"Complete final source | lines {offset + 1}-{min(offset + 46, len(lines))}",
-            styles["Label"],
-        ))
-        story.append(Preformatted("\n".join(lines[offset:offset + 46]), styles["Source"]))
+    story.append(PageBreak())
+    title(filename)
+    story.append(Preformatted(
+        (ROOT / filename).read_text(), styles["Source"],
+        maxLineLength=87, splitChars=" ", newLineChars="    ",
+    ))
 
 
-def footer(canvas, doc):
-    canvas.saveState()
-    canvas.setFont("Helvetica", 8)
-    canvas.setFillColor(colors.HexColor("#44546a"))
-    canvas.drawString(36, 20, "PES1UG24CS900 | Kaushik Krishna Dwarakanath | Lab 7")
-    canvas.drawRightString(806, 20, f"Page {doc.page}")
-    canvas.restoreState()
-
-
-doc = SimpleDocTemplate(str(OUTPUT), pagesize=landscape(A4),
-                        leftMargin=36, rightMargin=36, topMargin=26, bottomMargin=34,
+doc = SimpleDocTemplate(str(OUTPUT), pagesize=A4,
+                        leftMargin=72, rightMargin=72, topMargin=60, bottomMargin=60,
                         title="Lab 7 - Fuzz Testing - PES1UG24CS900",
                         author="Kaushik Krishna Dwarakanath")
-doc.build(story, onFirstPage=footer, onLaterPages=footer)
+doc.build(story)
 print(OUTPUT)
