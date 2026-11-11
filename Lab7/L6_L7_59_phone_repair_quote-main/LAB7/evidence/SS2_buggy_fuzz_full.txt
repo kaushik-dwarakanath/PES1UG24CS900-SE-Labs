@@ -1,0 +1,190 @@
+============================= test session starts ==============================
+platform linux -- Python 3.15.0, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7
+plugins: hypothesis-6.170.15
+collected 23 items / 20 deselected / 3 selected
+
+test_phone_repair_quote_parser.py FFF                                    [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_mask_imei_no_crash ____________________________
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 14, in test_mask_imei_no_crash
+  |     @given(inputs)
+  |     
+  | BaseExceptionGroup: Hypothesis found 2 distinct failures. (2 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 26, in test_mask_imei_no_crash
+    |     assert result == ""
+    | AssertionError: assert ':' == ''
+    |   
+    |   + :
+    | Failing test case: test_mask_imei_no_crash(
+    |     s=':',
+    | )
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 17, in test_mask_imei_no_crash
+    |     result = mask_imei(s)
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/phone_repair_quote_parser.py", line 6, in mask_imei
+    |     imei = imei.replace('-', '').replace(' ', '')
+    |            ^^^^^^^^^^^^
+    | AttributeError: 'NoneType' object has no attribute 'replace'
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 19, in test_mask_imei_no_crash
+    |     pytest.fail(f"mask_imei crashed for {s!r}: {exc!r}")
+    |     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | Failed: mask_imei crashed for None: AttributeError("'NoneType' object has no attribute 'replace'")
+    | Failing test case: test_mask_imei_no_crash(
+    |     s=None,
+    | )
+    | Explanation:
+    |     These lines were always and only run by failing test cases:
+    |         /home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py:18
+    +------------------------------------
+_______________________ test_parse_parts_order_no_crash ________________________
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 35, in test_parse_parts_order_no_crash
+  |     @given(st.one_of(inputs, st.builds(
+  |                    ^^^
+  | BaseExceptionGroup: Hypothesis found 3 distinct failures. (3 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 42, in test_parse_parts_order_no_crash
+    |     result = parse_parts_order(s)
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/phone_repair_quote_parser.py", line 15, in parse_parts_order
+    |     for item in text.split(';'):
+    |                 ~~~~~~~~~~^^^^^
+    | TypeError: a bytes-like object is required, not 'str'
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 44, in test_parse_parts_order_no_crash
+    |     pytest.fail(f"parse_parts_order crashed for {s!r}: {exc!r}")
+    |     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | Failed: parse_parts_order crashed for b'': TypeError("a bytes-like object is required, not 'str'")
+    | Failing test case: test_parse_parts_order_no_crash(
+    |     s=b'',
+    | )
+    | Explanation:
+    |     These lines were always and only run by failing test cases:
+    |         /home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py:43
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 42, in test_parse_parts_order_no_crash
+    |     result = parse_parts_order(s)
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/phone_repair_quote_parser.py", line 16, in parse_parts_order
+    |     part, qty = item.split('x')
+    |     ^^^^^^^^^
+    | ValueError: not enough values to unpack (expected 2, got 1)
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 44, in test_parse_parts_order_no_crash
+    |     pytest.fail(f"parse_parts_order crashed for {s!r}: {exc!r}")
+    |     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | Failed: parse_parts_order crashed for '': ValueError('not enough values to unpack (expected 2, got 1)')
+    | Failing test case: test_parse_parts_order_no_crash(
+    |     s='',
+    | )
+    | Explanation:
+    |     These lines were always and only run by failing test cases:
+    |         /home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py:43
+    +---------------- 3 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 42, in test_parse_parts_order_no_crash
+    |     result = parse_parts_order(s)
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/phone_repair_quote_parser.py", line 15, in parse_parts_order
+    |     for item in text.split(';'):
+    |                 ^^^^^^^^^^
+    | AttributeError: 'NoneType' object has no attribute 'split'
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 44, in test_parse_parts_order_no_crash
+    |     pytest.fail(f"parse_parts_order crashed for {s!r}: {exc!r}")
+    |     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | Failed: parse_parts_order crashed for None: AttributeError("'NoneType' object has no attribute 'split'")
+    | Failing test case: test_parse_parts_order_no_crash(
+    |     s=None,
+    | )
+    | Explanation:
+    |     These lines were always and only run by failing test cases:
+    |         /home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py:43
+    +------------------------------------
+__________________________ test_parse_model_no_crash ___________________________
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 54, in test_parse_model_no_crash
+  |     @given(inputs)
+  |     
+  | BaseExceptionGroup: Hypothesis found 3 distinct failures. (3 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 57, in test_parse_model_no_crash
+    |     result = parse_model(s)
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/phone_repair_quote_parser.py", line 25, in parse_model
+    |     brand, model = text.strip().split(' ', 1)
+    |                    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+    | TypeError: a bytes-like object is required, not 'str'
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 59, in test_parse_model_no_crash
+    |     pytest.fail(f"parse_model crashed for {s!r}: {exc!r}")
+    |     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | Failed: parse_model crashed for b'': TypeError("a bytes-like object is required, not 'str'")
+    | Failing test case: test_parse_model_no_crash(
+    |     s=b'',
+    | )
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 57, in test_parse_model_no_crash
+    |     result = parse_model(s)
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/phone_repair_quote_parser.py", line 25, in parse_model
+    |     brand, model = text.strip().split(' ', 1)
+    |     ^^^^^^^^^^^^
+    | ValueError: not enough values to unpack (expected 2, got 1)
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 59, in test_parse_model_no_crash
+    |     pytest.fail(f"parse_model crashed for {s!r}: {exc!r}")
+    |     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | Failed: parse_model crashed for '': ValueError('not enough values to unpack (expected 2, got 1)')
+    | Failing test case: test_parse_model_no_crash(
+    |     s='',
+    | )
+    +---------------- 3 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 57, in test_parse_model_no_crash
+    |     result = parse_model(s)
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/phone_repair_quote_parser.py", line 25, in parse_model
+    |     brand, model = text.strip().split(' ', 1)
+    |                    ^^^^^^^^^^
+    | AttributeError: 'NoneType' object has no attribute 'strip'
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/kaushik/Documents/SE_Individual_Labs/PES1UG24CS900-SE-Labs/Lab7/L6_L7_59_phone_repair_quote-main/LAB7/test_phone_repair_quote_parser.py", line 59, in test_parse_model_no_crash
+    |     pytest.fail(f"parse_model crashed for {s!r}: {exc!r}")
+    |     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | Failed: parse_model crashed for None: AttributeError("'NoneType' object has no attribute 'strip'")
+    | Failing test case: test_parse_model_no_crash(
+    |     s=None,  # or any other generated value
+    | )
+    +------------------------------------
+=========================== short test summary info ============================
+FAILED test_phone_repair_quote_parser.py::test_mask_imei_no_crash - BaseExcep...
+FAILED test_phone_repair_quote_parser.py::test_parse_parts_order_no_crash - B...
+FAILED test_phone_repair_quote_parser.py::test_parse_model_no_crash - BaseExc...
+======================= 3 failed, 20 deselected in 0.49s =======================
